@@ -1,0 +1,60 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="login-icon">🎤</div>
+      <h1>Gestion de concerts</h1>
+      <p>Connectez-vous en tant qu'administrateur ou utilisateur pour gérer les concerts et réserver des billets.</p>
+    </div>
+
+    <div class="login-tabs">
+      <button
+        type="button"
+        class="tab-button"
+        [ngClass]="{ active: loginType === 'admin', inactive: loginType !== 'admin' }"
+        (click)="setLoginType('admin')"
+      >
+        Admin
+      </button>
+      <button
+        type="button"
+        class="tab-button"
+        [ngClass]="{ active: loginType === 'user', inactive: loginType !== 'user' }"
+        (click)="setLoginType('user')"
+      >
+        Utilisateur
+      </button>
+    </div>
+
+    <div *ngIf="loginType === 'admin'">
+      <form (ngSubmit)="loginAsAdmin()">
+        <div class="form-group">
+          <label class="form-label">Nom d'utilisateur</label>
+          <input class="form-input" type="text" name="username" [(ngModel)]="adminUsername" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mot de passe</label>
+          <input class="form-input" type="password" name="password" [(ngModel)]="adminPassword" required />
+        </div>
+        <button class="submit-button" type="submit">Se connecter</button>
+      </form>
+      <p class="demo-hint">Démo : admin / admin</p>
+    </div>
+
+    <div *ngIf="loginType === 'user'">
+      <form (ngSubmit)="loginAsUser()">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" name="email" [(ngModel)]="userEmail" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mot de passe</label>
+          <input class="form-input" type="password" name="password" [(ngModel)]="userPassword" required />
+        </div>
+        <button class="submit-button" type="submit">Se connecter</button>
+      </form>
+      <p class="demo-hint">Démo : entrez n'importe quel email/mot de passe</p>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  </div>
+</div>

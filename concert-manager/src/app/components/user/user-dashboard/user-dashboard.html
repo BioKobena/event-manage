@@ -1,0 +1,57 @@
+<div class="dashboard-container">
+  <header class="dashboard-header">
+    <div>
+      <h1>Mon espace</h1>
+      <p>Bienvenue, {{ currentUser?.nom }} {{ currentUser?.prenom }}</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-secondary" type="button" (click)="goToConcerts()">Voir les concerts</button>
+      <button class="btn-outline" type="button" (click)="logout()">Déconnexion</button>
+    </div>
+  </header>
+
+  <div class="dashboard-stats">
+    <div class="stat-card">
+      <div class="stat-icon">🎫</div>
+      <div class="stat-content">
+        <h3>{{ userReservations.length }}</h3>
+        <p>Réservations</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">💰</div>
+      <div class="stat-content">
+        <h3>{{ totalSpent | number:'1.0-0' }} €</h3>
+        <p>Total dépensé</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="reservations-section">
+    <h2>Mes réservations</h2>
+
+    <div *ngIf="userReservations.length === 0" class="no-reservations">
+      <div class="no-reservations-icon">🎭</div>
+      <h3>Aucune réservation</h3>
+      <p>Vous n'avez pas encore réservé de billets.</p>
+      <button class="btn-primary" type="button" (click)="goToConcerts()">Explorer les concerts</button>
+    </div>
+
+    <div *ngIf="userReservations.length > 0" class="reservations-list">
+      <div class="reservation-card" *ngFor="let ticket of userReservations">
+        <div class="reservation-header">
+          <h4>{{ ticket.concert?.lieu }}</h4>
+          <span class="reservation-date">{{ ticket.concert?.date }}</span>
+        </div>
+        <div class="reservation-details">
+          <p><strong>Genre :</strong> {{ ticket.concert?.genre_musicale }}</p>
+          <p><strong>Description :</strong> {{ ticket.concert?.description }}</p>
+          <p><strong>Prix :</strong> {{ ticket.prix | number:'1.0-0' }} €</p>
+        </div>
+        <div class="reservation-status">
+          <span class="status-badge confirmed">Confirmée</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

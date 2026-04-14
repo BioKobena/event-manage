@@ -1,0 +1,130 @@
+<div class="catalog-container">
+  <header class="catalog-header">
+    <div>
+      <p class="welcome-label">Bienvenue dans le catalogue de concerts</p>
+      <h1>Explorez les meilleures scènes</h1>
+      <p class="catalog-subtitle">Recherchez, filtrez et réservez vos billets en quelques clics.</p>
+    </div>
+    <ng-container *ngIf="isLoggedIn; else guestAction">
+      <button class="btn-secondary" type="button" (click)="authService.logout(); router.navigate(['/concerts'])">Déconnexion</button>
+    </ng-container>
+    <ng-template #guestAction>
+      <button class="btn-secondary" type="button" (click)="router.navigate(['/login'])">Se connecter</button>
+    </ng-template>
+  </header>
+
+  <section class="search-section">
+    <div class="search-wrapper">
+      <span class="search-icon">🔎</span>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Rechercher un lieu, genre ou description..."
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="applyFilters()"
+      />
+    </div>
+  </section>
+
+  <section class="genre-filters">
+    <button
+      *ngFor="let genre of getGenres()"
+      type="button"
+      class="genre-btn"
+      [class.active]="selectedGenre === genre"
+      (click)="setGenre(genre)"
+    >
+      {{ genre }}
+    </button>
+  </section>
+
+  <section class="concerts-grid" *ngIf="filteredConcerts.length > 0; else noResults">
+    <article class="concert-card" *ngFor="let concert of filteredConcerts">
+      <div [class]="'concert-image ' + getBannerClass(concert.genre_musicale)">
+        <div class="music-icon">🎵</div>
+      </div>
+      <div class="concert-content">
+        <div class="concert-header">
+          <div>
+            <h2 class="concert-title">{{ concert.lieu }}</h2>
+            <span class="genre-badge" [class]="getBadgeClass(concert.genre_musicale)">{{ concert.genre_musicale }}</span>
+          </div>
+          <p class="price-value">{{ concert.prix | number:'1.0-0' }} €</p>
+        </div>
+
+        <div class="concert-info">
+          <div class="info-item">
+            <span class="info-icon">📅</span>
+            <span>{{ concert.date }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-icon">🎫</span>
+            <span>{{ concert.nombre_place }} places</span>
+          </div>
+        </div>
+
+        <p class="concert-description">{{ concert.description }}</p>
+
+        <div class="popularity-section">
+          <div class="popularity-label">
+            <span class="popularity-icon">⭐</span>
+            <span>Popularité</span>
+          </div>
+          <div class="popularity-bar">
+            <div class="popularity-fill" [style.width]="getPopularityWidth(concert.popularite)"></div>
+          </div>
+          <span class="popularity-value">{{ concert.popularite }}%</span>
+        </div>
+
+        <div class="concert-footer">
+          <div class="price-section">
+            <span class="price-label">Tarif par place</span>
+            <span class="price-value">{{ concert.prix | number:'1.0-0' }} €</span>
+          </div>
+          <button class="book-btn" type="button" (click)="openBooking(concert)">
+            {{ isUser ? 'Réserver' : 'Se connecter pour réserver' }}
+          </button>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <ng-template #noResults>
+    <div class="no-results">
+      <div class="no-results-icon">😕</div>
+      <h3>Aucun concert trouvé</h3>
+      <p>Essayez un autre mot-clé ou un autre genre.</p>
+    </div>
+  </ng-template>
+
+  <div *ngIf="showBookingModal" class="modal-overlay" (click)="closeBooking()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Réservation</h3>
+        <button class="modal-close" type="button" (click)="closeBooking()">✕</button>
+      </div>
+
+      <div class="booking-details">
+        <div class="booking-info">
+          <h4>{{ selectedConcert?.lieu }}</h4>
+          <p>{{ selectedConcert?.description }}</p>
+          <p><strong>Date :</strong> {{ selectedConcert?.date }}</p>
+          <p><strong>Genre :</strong> {{ selectedConcert?.genre_musicale }}</p>
+          <p><strong>Places disponibles :</strong> {{ selectedConcert?.nombre_place }}</p>
+        </div>
+
+        <div class="booking-price">
+          <p>Prix total</p>
+          <strong>{{ ticketPrice | number:'1.0-0' }} €</strong>
+        </div>
+      </div>
+
+      <div class="booking-actions">
+        <button class="btn-secondary" type="button" (click)="closeBooking()">Annuler</button>
+        <button class="btn-primary" type="button" (click)="bookTicket()">Confirmer</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="bookedMessage" class="booking-confirmation">{{ bookedMessage }}</div>
+</div>

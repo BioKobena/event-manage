@@ -1,0 +1,16 @@
+﻿<nav class="app-navbar">
+  <div class="navbar-brand">ConcertManager</div>
+  <div class="navbar-links">
+    <a routerLink="/concerts" routerLinkActive="active">Accueil</a>
+    <a *ngIf="isLoggedIn()" routerLink="/user/dashboard" routerLinkActive="active">Mon espace</a>
+    <a *ngIf="userRole() === 'admin'" routerLink="/admin" routerLinkActive="active">Administration</a>
+  </div>
+  <div class="navbar-actions">
+    <button *ngIf="!isLoggedIn()" class="nav-button" routerLink="/login">Se connecter</button>
+    <button *ngIf="isLoggedIn()" class="nav-button" type="button" (click)="logout()">Déconnexion</button>
+  </div>
+</nav>
+<main class="app-main">
+  <router-outlet></router-outlet>
+</main>
+
