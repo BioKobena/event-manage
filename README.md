@@ -1,45 +1,59 @@
-# Concert Management App Mockups
+# ConcertManager
 
-This repository contains the frontend code for the Concert Management App Mockups.
-The original design is available at:
-https://www.figma.com/design/b703QPIzmdg20okihi332L/Concert-Management-App-Mockups
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.5.
 
-## Branche
+## Development server
 
-- Travail principal sur la branche `frontend`
+To start a local development server, run:
 
-## Prérequis
-
-- Node.js installé (version 18+ recommandée)
-- npm disponible
-
-## Installation
-
-1. Depuis la racine du projet :
-   ```bash
-   git checkout frontend
-   npm install
-   ```
-
-2. Si le lancement échoue avec une erreur `lightningcss` sur Windows :
-   ```bash
-   npm install lightningcss-win32-x64-msvc
-   npm rebuild lightningcss
-   ```
-
-## Démarrage du projet
-
-Lancer le serveur de développement :
 ```bash
-npm run dev -- --host 0.0.0.0
+ng serve
 ```
 
-Puis ouvrir le navigateur sur :
+Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
-- `http://localhost:5173/`
+## Code scaffolding
 
-## Notes
+Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
 
-- `package-lock.json` est généré et suivi pour garantir des installations reproductibles.
-- Si vous utilisez un autre système, type Linux/macOS, la commande `npm install` devrait suffire.
-  
+```bash
+ng generate component component-name
+```
+
+For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+
+```bash
+ng generate --help
+```
+
+## Building
+
+To build the project run:
+
+```bash
+ng build
+```
+
+This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+
+## Running unit tests
+
+To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+
+```bash
+ng test
+```
+
+## Running end-to-end tests
+
+For end-to-end (e2e) testing, run:
+
+```bash
+ng e2e
+```
+
+Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+
+## Additional Resources
+
+For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
