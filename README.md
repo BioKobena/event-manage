@@ -1,59 +1,73 @@
-# ConcertManager
+# Concert Manager - Frontend Angular
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.5.
+Ce projet est une application frontend Angular pour la gestion de concerts, développée avec Angular 21 et utilisant Server-Side Rendering (SSR).
 
-## Development server
+## Prérequis
 
-To start a local development server, run:
+Avant de lancer le projet, assurez-vous d'avoir installé :
+- Node.js (version 18 ou supérieure)
+- npm (inclus avec Node.js)
 
+## Installation
+
+1. Clonez le dépôt :
+   ```bash
+   git clone https://github.com/BioKobena/event-manage.git
+   cd event-manage
+   ```
+
+2. Installez les dépendances :
+   ```bash
+   npm install
+   ```
+
+## Lancement du projet
+
+### Mode développement
+Pour lancer l'application en mode développement avec rechargement automatique :
+```bash
+npm start
+```
+ou
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+L'application sera accessible sur `http://localhost:4200/`.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+### Mode production
+Pour construire l'application pour la production :
 ```bash
-ng generate component component-name
+npm run build
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Les fichiers de build seront générés dans le dossier `dist/`.
 
+### Serveur SSR
+Pour lancer le serveur avec Server-Side Rendering :
 ```bash
-ng generate --help
+npm run serve:ssr:concert-manager
 ```
 
-## Building
+## Scripts disponibles
 
-To build the project run:
+- `npm start` : Lance le serveur de développement
+- `npm run build` : Construit l'application pour la production
+- `npm run watch` : Construit en mode watch pour le développement
+- `npm test` : Lance les tests unitaires
+- `npm run serve:ssr:concert-manager` : Lance le serveur SSR
 
-```bash
-ng build
-```
+## Structure du projet
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+- `src/` : Code source de l'application
+- `public/` : Assets statiques
+- `angular.json` : Configuration Angular CLI
+- `tsconfig.json` : Configuration TypeScript
 
-## Running unit tests
+## Technologies utilisées
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Angular 21
+- TypeScript
+- RxJS
+- Server-Side Rendering (SSR)
+- Express (pour le serveur SSR)
