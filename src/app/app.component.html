@@ -1,0 +1,70 @@
+<div class="app-shell">
+  <ng-container *ngIf="session$ | async as session; else guestTopbar">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">CM</span>
+        <div>
+          <p class="brand-eyebrow">Plateforme événementielle</p>
+          <h1>{{ title }}</h1>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <nav class="topnav" aria-label="Navigation principale">
+          <ng-container *ngFor="let item of navigation">
+            <a *ngIf="canShow(item, session)" [routerLink]="item.path" routerLinkActive="active">
+              {{ item.label }}
+            </a>
+          </ng-container>
+        </nav>
+
+        <div class="session-chip">
+          <span>{{ session.role === 'admin' ? 'Administrateur' : 'Utilisateur' }}</span>
+          <strong>{{ session.displayName }}</strong>
+          <button type="button" class="logout-btn" (click)="logout()">Déconnexion</button>
+        </div>
+      </div>
+    </header>
+  </ng-container>
+
+  <ng-template #guestTopbar>
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">CM</span>
+        <div>
+          <p class="brand-eyebrow">Plateforme événementielle</p>
+          <h1>{{ title }}</h1>
+        </div>
+      </div>
+
+      <a class="btn btn-secondary" routerLink="/login">Connexion</a>
+    </header>
+  </ng-template>
+
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">Interface sobre et professionnelle</p>
+      <h2>Un espace clair pour l’utilisateur et pour l’administration.</h2>
+      <p>
+        Explorez les concerts, suivez les artistes et gardez une vue nette sur les
+        tâches de gestion avec une interface pensée pour aller à l’essentiel.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary" routerLink="/dashboard">Ouvrir l'accueil</a>
+        <a class="btn btn-secondary" routerLink="/concerts">Voir les concerts</a>
+      </div>
+    </div>
+
+    <div class="hero-card">
+      <article class="metric" *ngFor="let item of highlights">
+        <strong>{{ item.value }}</strong>
+        <span>{{ item.label }}</span>
+      </article>
+    </div>
+  </section>
+
+  <section class="content-frame">
+    <router-outlet></router-outlet>
+  </section>
+</div>

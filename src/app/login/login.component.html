@@ -1,0 +1,40 @@
+<section class="login-shell">
+  <article class="login-card">
+    <p class="eyebrow">Connexion</p>
+    <h2>Accéder à votre espace</h2>
+    <p class="lead">
+      Connectez-vous avec l’adresse e-mail enregistrée dans la base pour rejoindre l’espace
+      utilisateur ou l’administration.
+    </p>
+
+    <div class="role-grid">
+      <button
+        *ngFor="let role of roles"
+        type="button"
+        class="role-card"
+        [class.active]="selectedRole === role.value"
+        (click)="selectedRole = role.value"
+      >
+        <strong>{{ role.label }}</strong>
+        <span>{{ role.helper }}</span>
+      </button>
+    </div>
+
+    <label class="field">
+      <span>Adresse e-mail</span>
+      <input
+        type="email"
+        name="email"
+        [(ngModel)]="email"
+        placeholder="prenom.nom@exemple.com"
+        autocomplete="email"
+      />
+    </label>
+
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <button type="button" class="primary-btn" [disabled]="isLoading" (click)="login()">
+      {{ isLoading ? 'Connexion...' : 'Se connecter' }}
+    </button>
+  </article>
+</section>

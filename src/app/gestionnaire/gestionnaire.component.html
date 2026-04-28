@@ -1,0 +1,46 @@
+<section class="page">
+  <header class="page-head">
+    <div>
+      <p class="eyebrow">Administration</p>
+      <h2>Espace gestionnaire</h2>
+      <p class="lead">
+        Un tableau de pilotage sobre pour suivre les opérations sans surcharge visuelle.
+      </p>
+    </div>
+    <span class="soft-pill">Mode admin</span>
+  </header>
+
+  <p class="status-line" *ngIf="isLoading">Chargement de l’espace administrateur...</p>
+  <p class="status-line error" *ngIf="!isLoading && errorMessage">{{ errorMessage }}</p>
+
+  <div class="layout" *ngIf="!isLoading && !errorMessage">
+    <div class="left-column">
+      <article class="kpi-card" *ngFor="let kpi of kpis">
+        <span>{{ kpi.label }}</span>
+        <strong>{{ kpi.value }}</strong>
+      </article>
+    </div>
+
+    <article class="task-card">
+      <div>
+        <p class="eyebrow">Priorités</p>
+        <h3>Actions à court terme</h3>
+      </div>
+      <ul>
+        <li *ngFor="let action of actions">{{ action }}</li>
+      </ul>
+    </article>
+  </div>
+
+  <article class="task-card" *ngIf="!isLoading && !errorMessage">
+    <div>
+      <p class="eyebrow">Gestionnaires</p>
+      <h3>Équipe active</h3>
+    </div>
+    <ul>
+      <li *ngFor="let gestionnaire of gestionnaires">
+        {{ gestionnaire.prenom }} {{ gestionnaire.nom }} - {{ gestionnaire.permission }}
+      </li>
+    </ul>
+  </article>
+</section>

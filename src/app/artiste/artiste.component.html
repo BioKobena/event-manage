@@ -1,0 +1,30 @@
+<section class="page">
+  <header class="page-head">
+    <div>
+      <p class="eyebrow">Répertoire</p>
+      <h2>Artistes suivis</h2>
+      <p class="lead">
+        Une vue lisible des profils disponibles pour vos concerts et vos opérations.
+      </p>
+    </div>
+    <span class="soft-pill">Gestion centralisée</span>
+  </header>
+
+  <p class="status-line" *ngIf="isLoading">Chargement des artistes...</p>
+  <p class="status-line error" *ngIf="!isLoading && errorMessage">{{ errorMessage }}</p>
+
+  <div class="artist-grid" *ngIf="!isLoading && !errorMessage">
+    <article class="artist-card" *ngFor="let artist of artists">
+      <div class="artist-top">
+        <div>
+          <h3>{{ artist.prenom }} {{ artist.nom }}</h3>
+          <p>{{ artist.genre }}</p>
+        </div>
+        <span class="status">{{ artist.nationalite }}</span>
+      </div>
+
+      <p class="city">{{ artist.age }} ans</p>
+      <p class="note">{{ artist.email }}</p>
+    </article>
+  </div>
+</section>

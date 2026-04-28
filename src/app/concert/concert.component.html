@@ -1,0 +1,88 @@
+<section class="page">
+  <header class="page-head">
+    <div>
+      <p class="eyebrow">Espace utilisateur</p>
+      <h2>Catalogue de concerts</h2>
+      <p class="lead">
+        Filtrez rapidement les événements et gardez une vue claire sur les
+        options disponibles.
+      </p>
+    </div>
+    <span class="soft-pill">Réservation simple</span>
+  </header>
+
+  <p class="status-line" *ngIf="isLoading">Chargement du catalogue...</p>
+  <p class="status-line error" *ngIf="!isLoading && errorMessage">{{
+    errorMessage }}</p>
+
+  <ng-container *ngIf="!isLoading && !errorMessage">
+    <div class="filter-row" aria-label="Filtres de genre">
+      <button
+        *ngFor="let genre of genres"
+        type="button"
+        class="chip"
+        [class.active]="selectedGenre === genre"
+        (click)="setGenre(genre)">
+        {{ genre }}
+      </button>
+    </div>
+
+    <div *ngIf="auth.hasRole('admin')" class="create-form">
+      <h3>Créer un concert</h3>
+
+      <form (ngSubmit)="createConcert()">
+        <input type="text" [(ngModel)]="newConcert.lieu" name="lieu"
+          placeholder="Lieu" required />
+
+        <input type="date" [(ngModel)]="newConcert.date" name="date" required />
+
+        <input type="text" [(ngModel)]="newConcert.genreMusicale" name="genre"
+          placeholder="Genre" required />
+
+        <textarea [(ngModel)]="newConcert.description" name="description"
+          placeholder="Description"></textarea>
+
+        <input type="number" [(ngModel)]="newConcert.nombrePlace" name="places"
+          placeholder="Nombre de places" required />
+
+        <input type="number" [(ngModel)]="newConcert.prixTicket" name="prix"
+          placeholder="Prix (€)" required />
+
+        <button type="submit" class="primary-btn">Créer</button>
+      </form>
+    </div>
+
+    <div class="concert-grid">
+      <article class="concert-card" *ngFor="let concert of filteredConcerts">
+        <div class="concert-head">
+          <span class="genre-badge">{{ concert.genreMusicale }}</span>
+          <span class="status">{{ availabilityLabel(concert) }}</span>
+        </div>
+
+        <h3>{{ concert.lieu }}</h3>
+        <p class="venue">{{ concert.date }}</p>
+        <p class="description">{{ concert.description }}</p>
+
+        <div class="concert-footer">
+          <div>
+            <strong>{{ concert.prixTicket }} €</strong>
+            <span>{{ concert.nombrePlace }} places au total</span>
+          </div>
+
+          <button
+            *ngIf="auth.hasRole('user'); else adminNote"
+            type="button"
+            class="primary-btn"
+            [disabled]="remainingTickets(concert.id) === 0"
+            (click)="reserve(concert)">
+            Réserver
+          </button>
+
+          <ng-template #adminNote>
+            <span class="admin-note">Vue administrateur</span>
+          </ng-template>
+        </div>
+      </article>
+    </div>
+  </ng-container>
+</section>

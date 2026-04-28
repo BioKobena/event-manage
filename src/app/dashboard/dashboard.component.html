@@ -1,0 +1,42 @@
+<section class="page">
+  <header class="page-head">
+    <div>
+      <p class="eyebrow">Accueil</p>
+      <h2>Vue d'ensemble</h2>
+      <p class="lead">
+        Une base sobre pour suivre l’activité et diriger rapidement vers le bon espace.
+      </p>
+    </div>
+    <a routerLink="/concerts" class="ghost-link">Voir le catalogue</a>
+  </header>
+
+  <p class="status-line" *ngIf="isLoading">Chargement des données du tableau de bord...</p>
+  <p class="status-line error" *ngIf="!isLoading && errorMessage">{{ errorMessage }}</p>
+
+  <div class="stats-grid" *ngIf="!isLoading && !errorMessage">
+    <article class="stat-card" *ngFor="let stat of stats">
+      <span>{{ stat.label }}</span>
+      <strong>{{ stat.value }}</strong>
+      <p>{{ stat.note }}</p>
+    </article>
+  </div>
+
+  <div class="pathways" *ngIf="!isLoading && !errorMessage">
+    <article class="panel" *ngFor="let pathway of pathways">
+      <span class="panel-tag">{{ pathway.tag }}</span>
+      <h3>{{ pathway.title }}</h3>
+      <p>{{ pathway.text }}</p>
+      <a [routerLink]="pathway.link" class="panel-link">Ouvrir</a>
+    </article>
+  </div>
+
+  <article class="summary-panel" *ngIf="!isLoading && !errorMessage">
+    <div>
+      <p class="eyebrow">Repères</p>
+      <h3>Ce que la plateforme met en avant</h3>
+    </div>
+    <ul>
+      <li *ngFor="let item of milestones">{{ item }}</li>
+    </ul>
+  </article>
+</section>

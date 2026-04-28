@@ -1,0 +1,264 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.app-shell {
+  width: min(1440px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 1rem 0 2rem;
+}
+
+.topbar,
+.hero,
+.content-frame {
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow);
+}
+
+.topbar {
+  position: sticky;
+  top: 1rem;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-radius: 1.25rem;
+  padding: 1rem 1.25rem;
+  backdrop-filter: blur(12px);
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 1rem;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.brand-eyebrow {
+  margin: 0 0 0.15rem;
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.topnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.topnav a {
+  padding: 0.68rem 0.95rem;
+  border-radius: 999px;
+  color: var(--muted);
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.topnav a:hover,
+.topnav a.active {
+  color: var(--primary);
+  border-color: rgba(18, 59, 93, 0.12);
+  background: var(--primary-soft);
+}
+
+.session-chip {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.95rem;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  min-width: 11rem;
+}
+
+.session-chip span {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.session-chip strong {
+  font-size: 0.95rem;
+}
+
+.logout-btn {
+  justify-self: start;
+  margin-top: 0.15rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--primary);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.hero {
+  margin-top: 1.25rem;
+  border-radius: 1.35rem;
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(320px, 1fr);
+  gap: 1rem;
+}
+
+.hero-copy h2 {
+  margin: 0.4rem 0 0.8rem;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.05;
+  max-width: 13ch;
+}
+
+.hero-copy p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+  max-width: 60ch;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.9rem;
+  padding: 0.75rem 1.1rem;
+  border-radius: 0.9rem;
+  text-decoration: none;
+  font-weight: 700;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.btn-primary:hover {
+  background: #0f304a;
+  border-color: #0f304a;
+}
+
+.btn-secondary {
+  background: var(--surface-alt);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.btn-secondary:hover {
+  border-color: #c6d0dc;
+}
+
+.hero-card {
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
+}
+
+.metric {
+  padding: 1rem 1.05rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, #fbfcfe 0%, #f5f8fc 100%);
+}
+
+.metric strong {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-size: 1.2rem;
+}
+
+.metric span {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.content-frame {
+  margin-top: 1.25rem;
+  border-radius: 1.35rem;
+  padding: clamp(1rem, 2vw, 1.5rem);
+}
+
+@media (max-width: 960px) {
+  .topbar,
+  .hero {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .topbar {
+    position: static;
+  }
+
+  .topbar-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .session-chip {
+    width: 100%;
+  }
+
+  .hero-card {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .app-shell {
+    width: min(100%, calc(100% - 1rem));
+  }
+
+  .hero-card {
+    grid-template-columns: 1fr;
+  }
+}
