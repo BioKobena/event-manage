@@ -1,6 +1,6 @@
 <div class="catalog-container">
   <header class="catalog-header">
-    <div>
+    <div class="catalog-copy">
       <p class="welcome-label">Bienvenue dans le catalogue de concerts</p>
       <h1>Explorez les meilleures scènes</h1>
       <p class="catalog-subtitle">Recherchez, filtrez et réservez vos billets en quelques clics.</p>
@@ -15,7 +15,7 @@
 
   <section class="search-section">
     <div class="search-wrapper">
-      <span class="search-icon">🔎</span>
+      <span class="search-icon">⌕</span>
       <input
         class="search-input"
         type="text"
@@ -41,7 +41,7 @@
   <section class="concerts-grid" *ngIf="filteredConcerts.length > 0; else noResults">
     <article class="concert-card" *ngFor="let concert of filteredConcerts">
       <div [class]="'concert-image ' + getBannerClass(concert.genre_musicale)">
-        <div class="music-icon">🎵</div>
+        <div class="music-icon">LIVE</div>
       </div>
       <div class="concert-content">
         <div class="concert-header">
@@ -54,11 +54,11 @@
 
         <div class="concert-info">
           <div class="info-item">
-            <span class="info-icon">📅</span>
+            <span class="info-icon">•</span>
             <span>{{ concert.date }}</span>
           </div>
           <div class="info-item">
-            <span class="info-icon">🎫</span>
+            <span class="info-icon">•</span>
             <span>{{ concert.nombre_place }} places</span>
           </div>
         </div>
@@ -67,7 +67,7 @@
 
         <div class="popularity-section">
           <div class="popularity-label">
-            <span class="popularity-icon">⭐</span>
+            <span class="popularity-icon">•</span>
             <span>Popularité</span>
           </div>
           <div class="popularity-bar">
@@ -91,7 +91,7 @@
 
   <ng-template #noResults>
     <div class="no-results">
-      <div class="no-results-icon">😕</div>
+      <div class="no-results-icon">Aucun</div>
       <h3>Aucun concert trouvé</h3>
       <p>Essayez un autre mot-clé ou un autre genre.</p>
     </div>
@@ -101,7 +101,7 @@
     <div class="modal-content" (click)="$event.stopPropagation()">
       <div class="modal-header">
         <h3>Réservation</h3>
-        <button class="modal-close" type="button" (click)="closeBooking()">✕</button>
+        <button class="modal-close" type="button" (click)="closeBooking()">&times;</button>
       </div>
 
       <div class="booking-details">

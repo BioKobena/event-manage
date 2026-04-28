@@ -1,9 +1,12 @@
 <div class="login-container">
   <div class="login-card">
     <div class="login-header">
-      <div class="login-icon">🎤</div>
-      <h1>Gestion de concerts</h1>
-      <p>Connectez-vous en tant qu'administrateur ou utilisateur pour gérer les concerts et réserver des billets.</p>
+      <div class="login-icon">CM</div>
+      <div class="login-copy">
+        <p class="login-eyebrow">Accès sécurisé</p>
+        <h1>Concert Manager</h1>
+        <p>Connectez-vous pour administrer les concerts ou réserver vos places depuis votre espace utilisateur.</p>
+      </div>
     </div>
 
     <div class="login-tabs">
@@ -37,7 +40,7 @@
         </div>
         <button class="submit-button" type="submit">Se connecter</button>
       </form>
-      <p class="demo-hint">Démo : admin / admin</p>
+      <p class="demo-hint">Compte de démonstration: admin / admin</p>
     </div>
 
     <div *ngIf="loginType === 'user'">
@@ -52,7 +55,7 @@
         </div>
         <button class="submit-button" type="submit">Se connecter</button>
       </form>
-      <p class="demo-hint">Démo : entrez n'importe quel email/mot de passe</p>
+      <p class="demo-hint">Pour la version courante, saisissez un email valide pour créer ou retrouver votre compte.</p>
     </div>
 
     <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>

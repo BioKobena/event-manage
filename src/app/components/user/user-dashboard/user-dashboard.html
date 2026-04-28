@@ -1,6 +1,7 @@
 <div class="dashboard-container">
   <header class="dashboard-header">
-    <div>
+    <div class="dashboard-copy">
+      <p class="dashboard-eyebrow">Espace personnel</p>
       <h1>Mon espace</h1>
       <p>Bienvenue, {{ currentUser?.nom }} {{ currentUser?.prenom }}</p>
     </div>
@@ -12,14 +13,14 @@
 
   <div class="dashboard-stats">
     <div class="stat-card">
-      <div class="stat-icon">🎫</div>
+      <div class="stat-icon">R</div>
       <div class="stat-content">
         <h3>{{ userReservations.length }}</h3>
         <p>Réservations</p>
       </div>
     </div>
     <div class="stat-card">
-      <div class="stat-icon">💰</div>
+      <div class="stat-icon">€</div>
       <div class="stat-content">
         <h3>{{ totalSpent | number:'1.0-0' }} €</h3>
         <p>Total dépensé</p>
@@ -31,7 +32,7 @@
     <h2>Mes réservations</h2>
 
     <div *ngIf="userReservations.length === 0" class="no-reservations">
-      <div class="no-reservations-icon">🎭</div>
+      <div class="no-reservations-icon">Aucun</div>
       <h3>Aucune réservation</h3>
       <p>Vous n'avez pas encore réservé de billets.</p>
       <button class="btn-primary" type="button" (click)="goToConcerts()">Explorer les concerts</button>

@@ -93,9 +93,15 @@ export class ConcertCatalogComponent implements OnInit {
     }
 
     if (this.selectedConcert) {
-      this.ticketService.reserveTicket(this.selectedConcert, currentUser, this.ticketPrice);
-      this.bookedMessage = `Réservation confirmée pour ${this.selectedConcert.lieu} !`;
-      this.showBookingModal = false;
+      this.ticketService.reserveTicket(this.selectedConcert, currentUser).subscribe((ticket) => {
+        if (ticket) {
+          this.bookedMessage = `Réservation confirmée pour ${this.selectedConcert?.lieu} !`;
+          this.showBookingModal = false;
+          this.loadConcerts();
+        } else {
+          this.bookedMessage = 'Aucun ticket disponible pour ce concert.';
+        }
+      });
     }
   }
 

@@ -2,7 +2,7 @@
   <header class="admin-header">
     <div class="header-content">
       <div class="header-left">
-        <div class="header-icon">??</div>
+        <div class="header-icon">CM</div>
         <div>
           <h1 class="header-title">Concert Manager</h1>
           <p class="header-subtitle">Gestion complète des concerts, clients, artistes et tickets.</p>
@@ -37,7 +37,7 @@
         </div>
         <div class="stat-card stat-orange">
           <div class="stat-value">{{ getTotalRevenue() | number:'1.0-0' }} €</div>
-          <div class="stat-label">Revenue total</div>
+          <div class="stat-label">Chiffre d'affaires total</div>
         </div>
       </div>
 
@@ -238,7 +238,7 @@
     <div class="modal-content" (click)="$event.stopPropagation()">
       <div class="modal-header">
         <h3>{{ selectedConcert ? 'Modifier un concert' : 'Ajouter un concert' }}</h3>
-        <button class="modal-close" type="button" (click)="showConcertForm = false">?</button>
+        <button class="modal-close" type="button" (click)="showConcertForm = false">&times;</button>
       </div>
       <form class="modal-form" (ngSubmit)="saveConcert()">
         <div class="form-group">
@@ -281,7 +281,7 @@
     <div class="modal-content" (click)="$event.stopPropagation()">
       <div class="modal-header">
         <h3>{{ selectedClient ? 'Modifier un client' : 'Ajouter un client' }}</h3>
-        <button class="modal-close" type="button" (click)="showClientForm = false">?</button>
+        <button class="modal-close" type="button" (click)="showClientForm = false">&times;</button>
       </div>
       <form class="modal-form" (ngSubmit)="saveClient()">
         <div class="form-group">
@@ -316,7 +316,7 @@
     <div class="modal-content" (click)="$event.stopPropagation()">
       <div class="modal-header">
         <h3>{{ selectedArtiste ? 'Modifier un artiste' : 'Ajouter un artiste' }}</h3>
-        <button class="modal-close" type="button" (click)="showArtisteForm = false">?</button>
+        <button class="modal-close" type="button" (click)="showArtisteForm = false">&times;</button>
       </div>
       <form class="modal-form" (ngSubmit)="saveArtiste()">
         <div class="form-group">
@@ -347,4 +347,3 @@
     </div>
   </div>
 </div>
-

@@ -91,18 +91,22 @@ export class AdminDashboardComponent implements OnInit {
 
   saveConcert(): void {
     if (this.selectedConcert) {
-      this.concertService.updateConcert(this.concertForm);
-    } else {
-      this.concertService.addConcert(this.concertForm);
+      this.concertService.updateConcert(this.concertForm).subscribe(() => {
+        this.showConcertForm = false;
+        this.loadData();
+      });
+      return;
     }
-    this.showConcertForm = false;
-    this.loadData();
+
+    this.concertService.addConcert(this.concertForm).subscribe(() => {
+      this.showConcertForm = false;
+      this.loadData();
+    });
   }
 
   deleteConcert(id: number): void {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce concert ?')) {
-      this.concertService.deleteConcert(id);
-      this.loadData();
+      this.concertService.deleteConcert(id).subscribe(() => this.loadData());
     }
   }
 
@@ -119,18 +123,22 @@ export class AdminDashboardComponent implements OnInit {
 
   saveClient(): void {
     if (this.selectedClient) {
-      this.clientService.updateClient(this.clientForm);
-    } else {
-      this.clientService.addClient(this.clientForm);
+      this.clientService.updateClient(this.clientForm).subscribe(() => {
+        this.showClientForm = false;
+        this.loadData();
+      });
+      return;
     }
-    this.showClientForm = false;
-    this.loadData();
+
+    this.clientService.addClient(this.clientForm).subscribe(() => {
+      this.showClientForm = false;
+      this.loadData();
+    });
   }
 
   deleteClient(id: number): void {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce client ?')) {
-      this.clientService.deleteClient(id);
-      this.loadData();
+      this.clientService.deleteClient(id).subscribe(() => this.loadData());
     }
   }
 
@@ -147,25 +155,28 @@ export class AdminDashboardComponent implements OnInit {
 
   saveArtiste(): void {
     if (this.selectedArtiste) {
-      this.artisteService.updateArtiste(this.artisteForm);
-    } else {
-      this.artisteService.addArtiste(this.artisteForm);
+      this.artisteService.updateArtiste(this.artisteForm).subscribe(() => {
+        this.showArtisteForm = false;
+        this.loadData();
+      });
+      return;
     }
-    this.showArtisteForm = false;
-    this.loadData();
+
+    this.artisteService.addArtiste(this.artisteForm).subscribe(() => {
+      this.showArtisteForm = false;
+      this.loadData();
+    });
   }
 
   deleteArtiste(id: number): void {
     if (confirm('Êtes-vous sûr de vouloir supprimer cet artiste ?')) {
-      this.artisteService.deleteArtiste(id);
-      this.loadData();
+      this.artisteService.deleteArtiste(id).subscribe(() => this.loadData());
     }
   }
 
   deleteTicket(id: number): void {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce ticket ?')) {
-      this.ticketService.deleteTicket(id);
-      this.loadData();
+      this.ticketService.deleteTicket(id).subscribe(() => this.loadData());
     }
   }
 

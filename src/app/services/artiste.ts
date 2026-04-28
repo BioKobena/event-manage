@@ -1,83 +1,98 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';
 import { Artiste } from '../models/artiste.model';
+import { API_BASE_URL } from '../core/api/api.constants';
+
+interface BackendArtiste {
+  id?: number;
+  nom?: string;
+  prenom?: string;
+  genre?: string;
+  age?: number;
+  email?: string;
+  nationalite?: string;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class ArtisteService {
-  private artistesSubject: BehaviorSubject<Artiste[]>;
-  public artistes: Observable<Artiste[]>;
+  private readonly artistesSubject = new BehaviorSubject<Artiste[]>([]);
+  public readonly artistes: Observable<Artiste[]> = this.artistesSubject.asObservable();
+  private readonly baseUrl = `${API_BASE_URL}/artiste`;
 
-  private mockArtistes: Artiste[] = [
-    new Artiste({
-      id: 1,
-      nom: 'Durand',
-      prenom: 'Alex',
-      genre: 'M',
-      age: 32,
-      email: 'alex.durand@example.com',
-      nationalite: 'Française'
-    }),
-    new Artiste({
-      id: 2,
-      nom: 'Smith',
-      prenom: 'Emma',
-      genre: 'F',
-      age: 27,
-      email: 'emma.smith@example.com',
-      nationalite: 'Britannique'
-    }),
-    new Artiste({
-      id: 3,
-      nom: 'Weber',
-      prenom: 'Hans',
-      genre: 'M',
-      age: 29,
-      email: 'hans.weber@example.com',
-      nationalite: 'Allemande'
-    }),
-    new Artiste({
-      id: 4,
-      nom: 'Johnson',
-      prenom: 'Michael',
-      genre: 'M',
-      age: 45,
-      email: 'michael.johnson@example.com',
-      nationalite: 'Américaine'
-    })
-  ];
+  constructor(private readonly http: HttpClient) {}
 
-  constructor() {
-    this.artistesSubject = new BehaviorSubject<Artiste[]>(this.mockArtistes);
-    this.artistes = this.artistesSubject.asObservable();
+  private mapArtiste(artiste: BackendArtiste): Artiste {
+    return new Artiste({
+      id: artiste.id,
+      nom: artiste.nom ?? '',
+      prenom: artiste.prenom ?? '',
+      genre: artiste.genre ?? '',
+      age: artiste.age ?? 0,
+      email: artiste.email ?? '',
+      nationalite: artiste.nationalite ?? '',
+    });
+  }
+
+  private toPayload(artiste: Artiste): BackendArtiste {
+    return {
+      nom: artiste.nom,
+      prenom: artiste.prenom,
+      genre: artiste.genre,
+      age: artiste.age,
+      email: artiste.email,
+      nationalite: artiste.nationalite,
+    };
   }
 
   getAllArtistes(): Observable<Artiste[]> {
-    return this.artistes;
+    return this.http.get<BackendArtiste[]>(`${this.baseUrl}/all`).pipe(
+      map((artistes) => artistes.map((artiste) => this.mapArtiste(artiste))),
+      tap((artistes) => this.artistesSubject.next(artistes)),
+      catchError(() => of(this.artistesSubject.value))
+    );
   }
 
   getArtisteById(id: number): Artiste | undefined {
-    return this.artistesSubject.value.find((a) => a.id === id);
+    return this.artistesSubject.value.find((artiste) => artiste.id === id);
   }
 
-  addArtiste(artiste: Artiste): void {
-    const artistes = this.artistesSubject.value;
-    artiste.id = Math.max(...artistes.map((a) => a.id || 0)) + 1;
-    this.artistesSubject.next([...artistes, artiste]);
+  addArtiste(artiste: Artiste): Observable<Artiste[]> {
+    return this.http.post<BackendArtiste[]>(this.baseUrl, this.toPayload(artiste)).pipe(
+      map((artistes) => artistes.map((item) => this.mapArtiste(item))),
+      tap((artistes) => this.artistesSubject.next(artistes)),
+      catchError(() => of(this.artistesSubject.value))
+    );
   }
 
-  updateArtiste(artiste: Artiste): void {
-    const artistes = this.artistesSubject.value;
-    const index = artistes.findIndex((a) => a.id === artiste.id);
-    if (index !== -1) {
-      artistes[index] = artiste;
-      this.artistesSubject.next([...artistes]);
+  updateArtiste(artiste: Artiste): Observable<Artiste> {
+    if (!artiste.id) {
+      throw new Error('Artiste ID is required for update');
     }
+
+    return this.http
+      .put<BackendArtiste>(`${this.baseUrl}/update/${artiste.id}`, this.toPayload(artiste))
+      .pipe(
+        map((item) => this.mapArtiste(item)),
+        tap((updatedArtiste) => {
+          const nextArtistes = this.artistesSubject.value.map((current) =>
+            current.id === updatedArtiste.id ? updatedArtiste : current
+          );
+          this.artistesSubject.next(nextArtistes);
+        }),
+        catchError(() => of(artiste))
+      );
   }
 
-  deleteArtiste(id: number): void {
-    const artistes = this.artistesSubject.value.filter((a) => a.id !== id);
-    this.artistesSubject.next(artistes);
+  deleteArtiste(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/delete/${id}`).pipe(
+      tap(() => {
+        const nextArtistes = this.artistesSubject.value.filter((artiste) => artiste.id !== id);
+        this.artistesSubject.next(nextArtistes);
+      }),
+      catchError(() => of(void 0))
+    );
   }
 }

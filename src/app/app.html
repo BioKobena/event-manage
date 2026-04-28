@@ -1,16 +1,24 @@
-﻿<nav class="app-navbar">
-  <div class="navbar-brand">ConcertManager</div>
-  <div class="navbar-links">
+<header class="app-navbar">
+  <div class="navbar-brand">
+    <span class="brand-mark">CM</span>
+    <div class="brand-copy">
+      <span class="brand-name">Concert Manager</span>
+      <span class="brand-tagline">Plateforme de réservation</span>
+    </div>
+  </div>
+
+  <nav class="navbar-links" aria-label="Navigation principale">
     <a routerLink="/concerts" routerLinkActive="active">Accueil</a>
     <a *ngIf="isLoggedIn()" routerLink="/user/dashboard" routerLinkActive="active">Mon espace</a>
     <a *ngIf="userRole() === 'admin'" routerLink="/admin" routerLinkActive="active">Administration</a>
-  </div>
+  </nav>
+
   <div class="navbar-actions">
-    <button *ngIf="!isLoggedIn()" class="nav-button" routerLink="/login">Se connecter</button>
-    <button *ngIf="isLoggedIn()" class="nav-button" type="button" (click)="logout()">Déconnexion</button>
+    <button *ngIf="!isLoggedIn()" class="nav-button nav-button-primary" routerLink="/login" type="button">Se connecter</button>
+    <button *ngIf="isLoggedIn()" class="nav-button nav-button-secondary" type="button" (click)="logout()">Déconnexion</button>
   </div>
-</nav>
+</header>
+
 <main class="app-main">
   <router-outlet></router-outlet>
 </main>
-

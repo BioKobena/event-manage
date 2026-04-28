@@ -36,8 +36,10 @@ export class UserDashboardComponent implements OnInit {
 
   loadUserReservations(): void {
     if (this.currentUser && this.currentUser.id) {
-      this.userReservations = this.ticketService.getReservationsByClient(this.currentUser.id);
-      this.totalSpent = this.userReservations.reduce((sum, ticket) => sum + ticket.prix, 0);
+      this.ticketService.getTicketsByClient(this.currentUser.id).subscribe((tickets) => {
+        this.userReservations = tickets;
+        this.totalSpent = this.userReservations.reduce((sum, ticket) => sum + ticket.prix, 0);
+      });
     }
   }
 

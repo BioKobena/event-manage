@@ -1,98 +1,112 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';
 import { Concert } from '../models/concert.model';
+import { API_BASE_URL } from '../core/api/api.constants';
+
+interface BackendConcert {
+  id?: number;
+  lieu?: string;
+  date?: string;
+  genre_musicale?: string;
+  description?: string;
+  popularite?: number;
+  nombre_place?: number;
+  prixTicket?: number;
+}
+
+interface ConcertPayload {
+  lieu: string;
+  date: string;
+  genreMusicale: string;
+  description: string;
+  popularite: number;
+  nombrePlace: number;
+  prixTicket: number;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class ConcertService {
-  private concertsSubject: BehaviorSubject<Concert[]>;
-  public concerts: Observable<Concert[]>;
+  private readonly concertsSubject = new BehaviorSubject<Concert[]>([]);
+  public readonly concerts: Observable<Concert[]> = this.concertsSubject.asObservable();
+  private readonly baseUrl = `${API_BASE_URL}/concert`;
 
-  private mockConcerts: Concert[] = [
-    new Concert({
-      id: 1,
-      lieu: 'Olympia Paris',
-      date: '2026-05-15',
-      genre_musicale: 'Rock',
-      description: 'Concert rock énergique avec les meilleurs artistes de la scène internationale.',
-      popularite: 95,
-      nombre_place: 2000,
-      prix: 55
-    }),
-    new Concert({
-      id: 2,
-      lieu: 'Zénith Lille',
-      date: '2026-06-20',
-      genre_musicale: 'Pop',
-      description: 'Soirée pop inoubliable avec une ambiance festive garantie.',
-      popularite: 88,
-      nombre_place: 3000,
-      prix: 45
-    }),
-    new Concert({
-      id: 3,
-      lieu: 'Stade de France',
-      date: '2026-07-10',
-      genre_musicale: 'Électro',
-      description: 'Festival électro géant avec les plus grands DJ du moment.',
-      popularite: 92,
-      nombre_place: 50000,
-      prix: 70
-    }),
-    new Concert({
-      id: 4,
-      lieu: 'Le Bataclan',
-      date: '2026-08-05',
-      genre_musicale: 'Jazz',
-      description: 'Soirée jazz intimiste avec des musiciens de renommée mondiale.',
-      popularite: 85,
-      nombre_place: 1500,
-      prix: 65
-    }),
-    new Concert({
-      id: 5,
-      lieu: 'AccorHotels Arena',
-      date: '2026-09-12',
-      genre_musicale: 'Hip-Hop',
-      description: 'Concert hip-hop explosif avec les stars du rap français.',
-      popularite: 90,
-      nombre_place: 20000,
-      prix: 60
-    })
-  ];
+  constructor(private readonly http: HttpClient) {}
 
-  constructor() {
-    this.concertsSubject = new BehaviorSubject<Concert[]>(this.mockConcerts);
-    this.concerts = this.concertsSubject.asObservable();
+  private mapConcert(concert: BackendConcert): Concert {
+    return new Concert({
+      id: concert.id,
+      lieu: concert.lieu ?? '',
+      date: concert.date ?? '',
+      genre_musicale: concert.genre_musicale ?? '',
+      description: concert.description ?? '',
+      popularite: concert.popularite ?? 0,
+      nombre_place: concert.nombre_place ?? 0,
+      prix: concert.prixTicket ?? 0,
+    });
+  }
+
+  private toPayload(concert: Concert): ConcertPayload {
+    return {
+      lieu: concert.lieu,
+      date: concert.date,
+      genreMusicale: concert.genre_musicale,
+      description: concert.description,
+      popularite: concert.popularite,
+      nombrePlace: concert.nombre_place,
+      prixTicket: concert.prix,
+    };
   }
 
   getAllConcerts(): Observable<Concert[]> {
-    return this.concerts;
+    return this.http.get<BackendConcert[]>(`${this.baseUrl}/all`).pipe(
+      map((concerts) => concerts.map((concert) => this.mapConcert(concert))),
+      tap((concerts) => this.concertsSubject.next(concerts)),
+      catchError(() => of(this.concertsSubject.value))
+    );
   }
 
   getConcertById(id: number): Concert | undefined {
-    return this.concertsSubject.value.find((c) => c.id === id);
+    return this.concertsSubject.value.find((concert) => concert.id === id);
   }
 
-  addConcert(concert: Concert): void {
-    const concerts = this.concertsSubject.value;
-    concert.id = Math.max(...concerts.map((c) => c.id || 0)) + 1;
-    this.concertsSubject.next([...concerts, concert]);
+  addConcert(concert: Concert): Observable<Concert[]> {
+    return this.http.post<BackendConcert[]>(this.baseUrl, this.toPayload(concert)).pipe(
+      map((concerts) => concerts.map((item) => this.mapConcert(item))),
+      tap((concerts) => this.concertsSubject.next(concerts)),
+      catchError(() => of(this.concertsSubject.value))
+    );
   }
 
-  updateConcert(concert: Concert): void {
-    const concerts = this.concertsSubject.value;
-    const index = concerts.findIndex((c) => c.id === concert.id);
-    if (index !== -1) {
-      concerts[index] = concert;
-      this.concertsSubject.next([...concerts]);
+  updateConcert(concert: Concert): Observable<Concert> {
+    if (!concert.id) {
+      throw new Error('Concert ID is required for update');
     }
+
+    return this.http
+      .put<BackendConcert>(`${this.baseUrl}/update/${concert.id}`, this.toPayload(concert))
+      .pipe(
+        map((item) => this.mapConcert(item)),
+        tap((updatedConcert) => {
+          const nextConcerts = this.concertsSubject.value.map((current) =>
+            current.id === updatedConcert.id ? updatedConcert : current
+          );
+          this.concertsSubject.next(nextConcerts);
+        }),
+        catchError(() => of(concert))
+      );
   }
 
-  deleteConcert(id: number): void {
-    const concerts = this.concertsSubject.value.filter((c) => c.id !== id);
-    this.concertsSubject.next(concerts);
+  deleteConcert(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/delete/${id}`).pipe(
+      tap(() => {
+        const nextConcerts = this.concertsSubject.value.filter((concert) => concert.id !== id);
+        this.concertsSubject.next(nextConcerts);
+      }),
+      catchError(() => of(void 0))
+    );
   }
 
   searchConcerts(searchTerm: string): Concert[] {
@@ -109,6 +123,6 @@ export class ConcertService {
     if (!genre || genre === 'Tous') {
       return this.concertsSubject.value;
     }
-    return this.concertsSubject.value.filter((c) => c.genre_musicale === genre);
+    return this.concertsSubject.value.filter((concert) => concert.genre_musicale === genre);
   }
 }

@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { catchError, map, of, switchMap } from 'rxjs';
 import { User } from '../models/user.model';
 import { Gestionnaire } from '../models/gestionnaire.model';
 import { Client } from '../models/client.model';
+import { ClientService } from './client';
 
 @Injectable({
   providedIn: 'root',
@@ -14,24 +16,25 @@ export class AuthService {
   public userRole: Observable<'admin' | 'user' | null>;
 
   private getLocalStorageItem(key: string): string | null {
-    return typeof window !== 'undefined' && window?.localStorage
-      ? window.localStorage.getItem(key)
-      : null;
+    const storage = typeof window !== 'undefined' ? window.localStorage : null;
+    return storage && typeof storage.getItem === 'function' ? storage.getItem(key) : null;
   }
 
   private setLocalStorageItem(key: string, value: string): void {
-    if (typeof window !== 'undefined' && window?.localStorage) {
-      window.localStorage.setItem(key, value);
+    const storage = typeof window !== 'undefined' ? window.localStorage : null;
+    if (storage && typeof storage.setItem === 'function') {
+      storage.setItem(key, value);
     }
   }
 
   private removeLocalStorageItem(key: string): void {
-    if (typeof window !== 'undefined' && window?.localStorage) {
-      window.localStorage.removeItem(key);
+    const storage = typeof window !== 'undefined' ? window.localStorage : null;
+    if (storage && typeof storage.removeItem === 'function') {
+      storage.removeItem(key);
     }
   }
 
-  constructor() {
+  constructor(private readonly clientService: ClientService) {
     const storedUser = this.getLocalStorageItem('currentUser');
     this.currentUserSubject = new BehaviorSubject<User | null>(
       storedUser ? JSON.parse(storedUser) : null
@@ -53,6 +56,13 @@ export class AuthService {
     return this.userRoleSubject.value;
   }
 
+  private setSession(user: User, role: 'admin' | 'user'): void {
+    this.setLocalStorageItem('currentUser', JSON.stringify(user));
+    this.setLocalStorageItem('userRole', role);
+    this.currentUserSubject.next(user);
+    this.userRoleSubject.next(role);
+  }
+
   loginAsAdmin(username: string, password: string): boolean {
     if (username === 'admin' && password === 'admin') {
       const admin = new Gestionnaire({
@@ -64,35 +74,47 @@ export class AuthService {
         email: 'admin@concerts.local',
         permission: 'ALL'
       });
-
-      this.setLocalStorageItem('currentUser', JSON.stringify(admin));
-      this.setLocalStorageItem('userRole', 'admin');
-      this.currentUserSubject.next(admin);
-      this.userRoleSubject.next('admin');
+      this.setSession(admin, 'admin');
       return true;
     }
     return false;
   }
 
-  loginAsUser(email: string, password: string): boolean {
-    if (email && password) {
-      const user = new Client({
-        id: 1,
-        nom: 'Dupont',
-        prenom: 'Marie',
-        genre: 'F',
-        age: 28,
-        email,
-        compte_bancaire: 'FR76****1234'
-      });
-
-      this.setLocalStorageItem('currentUser', JSON.stringify(user));
-      this.setLocalStorageItem('userRole', 'user');
-      this.currentUserSubject.next(user);
-      this.userRoleSubject.next('user');
-      return true;
+  loginAsUser(email: string, password: string): Observable<boolean> {
+    if (!email || !password) {
+      return of(false);
     }
-    return false;
+
+    return this.clientService.getAllClients().pipe(
+      switchMap((clients) => {
+        const existing = clients.find((client) => client.email === email);
+        if (existing) {
+          this.setSession(existing, 'user');
+          return of(true);
+        }
+
+        const createdClient = new Client({
+          nom: 'Utilisateur',
+          prenom: 'Invité',
+          genre: 'U',
+          age: 0,
+          email,
+          compte_bancaire: '',
+        });
+
+        return this.clientService.addClient(createdClient).pipe(
+          map((createdClients) => {
+            const created =
+              createdClients.find((item) => item.email === email) ??
+              createdClients[createdClients.length - 1] ??
+              createdClient;
+            this.setSession(created, 'user');
+            return true;
+          })
+        );
+      }),
+      catchError(() => of(false))
+    );
   }
 
   logout(): void {

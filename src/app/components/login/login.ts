@@ -49,10 +49,12 @@ export class LoginComponent implements OnInit {
   }
 
   loginAsUser(): void {
-    if (this.authService.loginAsUser(this.userEmail, this.userPassword)) {
-      this.router.navigate(['/user/dashboard']);
-    } else {
-      this.errorMessage = 'Identifiants utilisateur incorrects';
-    }
+    this.authService.loginAsUser(this.userEmail, this.userPassword).subscribe((success) => {
+      if (success) {
+        this.router.navigate(['/user/dashboard']);
+      } else {
+        this.errorMessage = 'Identifiants utilisateur incorrects';
+      }
+    });
   }
 }

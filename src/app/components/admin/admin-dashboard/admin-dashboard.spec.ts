@@ -1,18 +1,31 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 
-import { AdminDashboard } from './admin-dashboard';
+import { AdminDashboardComponent } from './admin-dashboard';
 
-describe('AdminDashboard', () => {
-  let component: AdminDashboard;
-  let fixture: ComponentFixture<AdminDashboard>;
+describe('AdminDashboardComponent', () => {
+  let component: AdminDashboardComponent;
+  let fixture: ComponentFixture<AdminDashboardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AdminDashboard],
+      imports: [AdminDashboardComponent],
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AdminDashboard);
+    fixture = TestBed.createComponent(AdminDashboardComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    const httpMock = TestBed.inject(HttpTestingController);
+    httpMock.expectOne('http://localhost:8080/concert/all').flush([]);
+    httpMock.expectOne('http://localhost:8080/client/all').flush([]);
+    httpMock.expectOne('http://localhost:8080/artiste/all').flush([]);
+    httpMock.expectOne('http://localhost:8080/tickets/all').flush([]);
+    httpMock.verify();
+
     await fixture.whenStable();
   });
 
